@@ -9,13 +9,11 @@ import { approveABI, CHAINS, erc20Abi } from '../../config'
 import { KEY_STORE } from '../../constance'
 const DEFAULT_CHAIN_ID = '0x38' // BSC
 
-const walletTgSdk = new WalletTgSdk({
-  injected: true
-})
+const walletTgSdk = new WalletTgSdk()
 
 
-// const { ethereum } = walletTgSdk
-const ethereum = window.ethereum
+const { ethereum } = walletTgSdk
+
 
 async function getTokenInfo(contract, rpc) {
   const provider = new ethers.JsonRpcProvider(rpc)
