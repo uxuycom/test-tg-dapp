@@ -124,27 +124,7 @@ const themeConfg = {
          }
        }
     }
-    
 
-    // --tg-background-color: #ffffff;
-    //  --tg-header-color: #ffffff; 
-    //  --tg-theme-accent-text-color: #168acd; 
-    //  --tg-theme-background-color: #ffffff;
-    //   --tg-theme-button-color: #40a7e3; 
-    //   --tg-theme-button-text-color: #ffffff; 
-    //   --tg-theme-destructive-text-color: #d14e4e; 
-    //   --tg-theme-header-background-color: #ffffff; 
-    //   --tg-theme-hint-color: #999999; 
-    //   --tg-theme-link-color: #168acd; 
-    //   --tg-theme-secondary-background-color: #f1f1f1; 
-    //   --tg-theme-section-background-color: #ffffff; 
-    //   --tg-theme-section-header-text-color: #168acd; 
-    //   --tg-theme-subtitle-text-color: #999999; 
-    //   --tg-theme-text-color: #000000; 
-    //   --tg-viewport-height: 650px; 
-    //   --tg-viewport-width: 422px; 
-    //   --tg-viewport-stable-height: 650px; 
-    //   scroll-behavior: auto;
 }
 
 // CommonJS export
