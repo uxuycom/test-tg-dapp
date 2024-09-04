@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useLayoutEffect } from 'react'
 //import { WalletTgSdk } from 'https://cdn.jsdelivr.net/npm/@blockchain-web3/web3-tg-sdk@0.1.6'
 import { WalletTgSdk } from '@uxuycom/web3-tg-sdk'
 import { ethers } from 'ethers'
@@ -9,9 +9,13 @@ import { approveABI, CHAINS, erc20Abi } from '../../config'
 import { KEY_STORE } from '../../constance'
 const DEFAULT_CHAIN_ID = '0x38' // BSC
 
-const walletTgSdk = new WalletTgSdk({})
+const walletTgSdk = new WalletTgSdk({
+  injected: true
+})
 
-const { ethereum } = walletTgSdk
+
+// const { ethereum } = walletTgSdk
+const ethereum = window.ethereum
 
 async function getTokenInfo(contract, rpc) {
   const provider = new ethers.JsonRpcProvider(rpc)
@@ -61,10 +65,9 @@ async function getTokenInfoViews(_rpc) {
     document.querySelector("#select_token_info").innerHTML = `
             <p>Token Name: ${name}</p>
             <p>Token Symbol: ${symbol}</p>
-          <p>Token Total Supply: ${ethers.formatUnits(totalSupply, decimals)}</p>
-          <p>Token Decimals: ${decimals}</p>
-
-          <p>Token Balance: ${balance}</p>
+            <p>Token Total Supply: ${ethers.formatUnits(totalSupply, decimals)}</p>
+            <p>Token Decimals: ${decimals}</p>
+            <p>Token Balance: ${balance}</p>
       `
   } catch (error) {
     console.log(error)
@@ -78,8 +81,8 @@ const defaultChainConfig = CHAINS.find(chain => String(chain.chainId) === DEFAUL
 function App() {
   const [state, setState] = useState({
     appInfo: null,
-    address: null,
-    chainId: '',
+    // address: null,
+    // chainId: '',
     signature: null,
     eth_signTypedData_v4: null,
     message: "DApp demo",
@@ -88,7 +91,10 @@ function App() {
     transaction_contract: defaultChainConfig.transaction_contract,
     chainRPCs: defaultChainConfig.chainRPCs,
   })
-  const refTempData = React.useRef(state)
+
+  const [ chainId ,setChainId] = useState("0x1")
+  const [ address, setAddress ] = useState("")
+
 
   const [btnLoadingConnect, setBtnLoadingConnect] = useState(false)
   const [signMessageContext, setSignMessageContext] = useState('Hello world')
@@ -104,70 +110,51 @@ function App() {
   const [verifyMessageResult, setVerifyMessageResult] = useState(null)
 
   const [notification, setNotification] = useState(null)
-  useEffect(() => {
-    setState({
-      ...state,
-      chainId: refTempData.current.chainId,
-      address: refTempData.current.address,
-    })
-  }, [refTempData.current])
 
-  useEffect(() => {
+
+  useLayoutEffect(() => {
     init()
   }, [])
 
-  const handleEvents = useCallback((event) => {
+
+  
+  function initEventListener() {
+    // events
+    ethereum.removeAllListeners()
     function handleAccountsChanged(accounts) {
-      refTempData.current = { ...refTempData.current, address: accounts[0] }
+        setAddress(accounts[0])
     }
-
     function handleChainChanged(_chainId) {
-      refTempData.current = { ...refTempData.current, chainId: _chainId }
+       setChainId("0x"+Number(_chainId).toString(16))
     }
-    
-    ethereum.on('accountsChanged',handleAccountsChanged)
 
+    ethereum.on('accountsChanged',handleAccountsChanged)
     ethereum.on('chainChanged', handleChainChanged)
-    return () => {
-      ethereum.removeAllListeners(); // remove all event
-    }
-  }, [state, refTempData.current])
+  }
+  
+
 
   // get chainId, address
-  const init = () => {
+  const init =  async () => {
     window?.Telegram?.WebApp?.expand?.()
-    handleEvents()
 
-    Promise.all([
-      ethereum.request({ method: 'eth_chainId', params: [] }), // chainId
-      ethereum.request({ method: 'eth_accounts', params: [] }), // address
-    ]).then(res => {
-      const [res1, res2] = res || []
-      const chainId = res1
-      const address = res2?.[0]
-      
-      const isConnected = !!address
-      if(!isConnected) {
-        return
-      }
-      
-      setState({
-        ...state,
-        chainId,
-        address,
-      })
-      autoSwitchChainToBSC()
-    }).catch(e => {
-      console.log(e)
-    })
+    const accounts = await ethereum.request({ method: 'eth_accounts', params: [] })
+    const chainId = await ethereum.request({ method: 'eth_chainId', params: [] })
+    const isConnected = accounts[0]
+    setChainId(chainId)
+    setAddress(accounts[0])
+    initEventListener()
+    isConnected &&  switchChain(DEFAULT_CHAIN_ID)
+ 
+
   }
 
   useEffect(() => {
-    if(!state.chainId ){
+    if(!chainId ){
       return
     }
 
-    const chainConfig = CHAINS.find(chain => String(chain.chainId) === String(state.chainId))
+    const chainConfig = CHAINS.find(chain => parseInt(chain.chainId) == parseInt(chainId))
     if(!chainConfig)  {
       return
     }
@@ -182,7 +169,7 @@ function App() {
       chainRPCs: chainConfig?.chainRPCs,
     })
     getTokenInfoViews(RPC_URL)
-  }, [state.chainId])
+  }, [chainId])
 
   useEffect(() => {
     if (notification) {
@@ -201,20 +188,11 @@ function App() {
     })
   }
   
-  async function autoSwitchChainToBSC() {
-      const isLocked = sessionStorage.getItem(KEY_STORE.Cache_BSC) == '1'
 
-      if(isLocked) {
-        return
-      }
-      
-      await switchChain(DEFAULT_CHAIN_ID)
-      sessionStorage.setItem(KEY_STORE.Cache_BSC, '1')
-  }
 
   // Get App Info Event
   const getAppInfo = () => {
-    const appInfo = ethereum.getAppInfo()
+    const appInfo = ethereum?.getAppInfo?.()
     setState({ ...state, appInfo });
     showNotification("App info retrieved successfully");
   };
@@ -224,14 +202,17 @@ function App() {
     //if(btnLoadingConnect) return
     setBtnLoadingConnect(true)
     try {
-      const result = await ethereum.request({
+      await ethereum.request({
         method: 'eth_requestAccounts',
         params: [],
       })
-      setState({ ...state, address: result[0] })
-      showNotification('Wallet connected successfully')
       
-      autoSwitchChainToBSC()
+      const accounts = await ethereum.request({ method: 'eth_accounts', params: [] })
+      const chainId = await ethereum.request({ method: 'eth_chainId', params: [] })
+      setAddress(accounts[0])
+      setChainId(chainId)
+      showNotification('Wallet connected successfully')  
+      switchChain(DEFAULT_CHAIN_ID)
 
     } catch (error) {
       console.error('Connection failed:', error)
@@ -245,7 +226,7 @@ function App() {
     try {
       await ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: Number(chainId) }],
+        params: [{ chainId: chainId }],
       });
       showNotification("Chain switched successfully");
     } catch (error) {
@@ -262,7 +243,7 @@ function App() {
     try {
       const result = await ethereum.request({
         method: 'personal_sign',
-        params: [signMessage, state.address],
+        params: [signMessage, address],
       })
       setState({ ...state, signature: result, message: signMessage })
       showNotification('Message signed successfully')
@@ -337,7 +318,7 @@ function App() {
         method: 'eth_sendTransaction',
         params: [
           {
-            from: state.address,
+            from: address,
             to: state.transaction.to,
             value: valueInWei,
           },
@@ -370,7 +351,7 @@ function App() {
       const data = tokenContract.interface.encodeFunctionData('transfer', [to, ethers.parseUnits(String(amount), decimals)]);
 
       const transaction = {
-        from: state.address,
+        from: address,
         to: contract,
         data: data
       }
@@ -427,17 +408,8 @@ function App() {
     setBtnLoadingTokenHash(false)
   }
 
-  const formatChainId = () => {
-    const c = String(state.chainId)
-    if(c.startsWith('0x')) {
-      return parseInt(c, 16)
-    }
-    return c
-  }
 
-  // const chainIdValue = useMemo(() => {
-  //   return formatChainId()
-  // }, [state.chainId])
+
 
   // Approve Contract Event
   const approveEvent = async () => {
@@ -463,7 +435,7 @@ function App() {
 
     // const amount = ethers.utils.parseUnits('1', 'ether'); // Adjust amount as needed
     const transaction = {
-      from: state.address,
+      from: address,
       to: tokenAddress,
       // value: "0x",
       data: data
@@ -498,9 +470,12 @@ function App() {
             <div className="mt-4 p-4 bg-gray-100 rounded-lg">
               <div className="text-body1 font-semibold mb-2 text-brand_1">{state.address ? 'connected' : 'not connected'}</div>
               <div className="text-body1 font-semibold mb-2">Address</div>
-              <p className="break-all">{state.address || ''}</p>
+              <p className="break-all">{address || ''}</p>
             </div>
-            {state.address ? <Btn text='Disconnect' onClick={() => ethereum.disconnect()} /> : <Btn loading={btnLoadingConnect} text='Connect Wallet' onClick={connectWallet} />}
+            {address ? <Btn text='Disconnect' onClick={() => {
+              
+              ethereum?.disconnect &&  ethereum?.disconnect?.()
+            }} /> : <Btn loading={btnLoadingConnect} text='Connect Wallet' onClick={connectWallet} />}
           </div>
         </section>
 
@@ -508,8 +483,8 @@ function App() {
           <div className='w-full px-[12px] py-[16px] bg-bg_0 rounded-[12px]'>
             <h3 className='text-center text-text_1 text-h6 font-semibold'>Switch Network</h3>
             <select
-                //value={chainIdValue}
-                value={state.chainId || DEFAULT_CHAIN_ID}
+                // value={chainIdValue}
+                value={chainId}
                 onChange={(e) => switchChain(e.target.value)}
                 className="w-full p-2 border rounded mt-[10px]"
             >
@@ -522,7 +497,7 @@ function App() {
                 {' '}
                 {/* <span className='text-Orange'>{formatChainId()}</span> */}
                 {' '}
-                <span className='text-Orange'>{state.chainId}</span>
+                <span className='text-Orange'>{chainId}</span>
               </div>
             </div>
           </div>
@@ -628,7 +603,7 @@ function App() {
             <h3 className='text-center text-text_1 text-h6 font-semibold'>Step 3: Send token Transaction</h3>
             <div className='mt-[10px]'>
               <div className='break-all mt-[10px]'>From:</div>
-              <div className='break-all'>{state.address}</div>
+              <div className='break-all'>{address}</div>
             </div>
             <br />
             {/* <input type="text" /> */}
@@ -712,7 +687,7 @@ function App() {
             <div className="text-body1 font-semibold mb-2 text-text_1">Approve Contract</div>
             <div className='mt-[10px]'>
               <div className='break-all mt-[10px]'>From:</div>
-              <div className='break-all'>{state.address}</div>
+              <div className='break-all'>{address}</div>
             </div>
             <br />
             <div>RPC:
