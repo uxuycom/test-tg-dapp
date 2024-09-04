@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import 'assets/theme.css';
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color_bg_bottom);
+}
+html body {
+  @apply text-body2;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.btn-primary {
+  @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded text-lg transition duration-300 ease-in-out transform hover:scale-105;
+}
+
+.btn-secondary {
+  @apply bg-gray-500 hover:bg-gray-700 text-white font-bold py-4 px-6 rounded text-lg transition duration-300 ease-in-out transform hover:scale-105;
+}
+
+@keyframes loading {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.loading-rotate-1s {
+  animation: loading 1s linear infinite;
+  transform-origin: center; /* 确保旋转中心在元素中心 */
+}
+
+.loading-rotate-2s {
+  animation: loading 2s linear infinite;
+  transform-origin: center; /* 确保旋转中心在元素中心 */
+}
