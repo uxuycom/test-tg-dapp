@@ -1,0 +1,197 @@
+html {
+    --Neutral_0: #fff;
+    --Neutral_1: #f5f5fa;
+    --Neutral_2: #f2f2f7;
+    --Neutral_3: #efeff4;
+    --Neutral_4: #eaeaea;
+    --Neutral_5: #d9d9d9;
+    --Neutral_6: #a2acb0;
+    --Neutral_7: #707579;
+    --Neutral_8: #2f2f2f;
+    --Neutral_9: #212121;
+    --Neutral_10: #0f0f0f;
+
+    --DarkNeutral_0: #0f0f0f;
+    --DarkNeutral_1: #17171a;
+    --DarkNeutral_2: #212121;
+    --DarkNeutral_3: #2f2f2f;
+    --DarkNeutral_4: #35353b;
+    --DarkNeutral_5: #3f3f46;
+    --DarkNeutral_6: #52525c;
+    --DarkNeutral_7: #5b5b65;
+    --DarkNeutral_8: #70707b;
+    --DarkNeutral_9: #aaaaaa;
+    --DarkNeutral_10: #e5e5e5;
+
+    --Purple: #b00fb4;
+    --Blue: #007aff;
+    --Green: #31d158;
+    --Red: #fe3b30;
+    --RedOrange: #ff4702;
+    --Orange: #ff7400;
+    --Yellow: #ffc400;
+    --White: #ffffff;
+    --Black: #000000;
+
+    --DarkPurple: #e937ed;
+    --DarkBlue: #2990ff;
+    --DarkGreen: #32e55e;
+    --DarkRed: #fe3b30;
+    --DarkRedOrange: #ff4702;
+    --DarkOrange: #ff7400;
+    --DarkYellow: #ffc400;
+    --DarkWhite: #ffffff;
+    --DarkBlack: #000000;
+
+    --AlphaPurple: rgba(163, 112, 255, 0.1);
+    --AlphaBlue: rgba(40, 109, 255, 0.1);
+    --AlphaGreen: rgba(49, 209, 88, 0.1);
+    --AlphaRed: rgba(254, 59, 48, 0.1);
+    --AlphaRedOrange: rgba(255, 71, 2, 0.1);
+    --AlphaOrange: rgba(255, 116, 0, 0.1);
+    --AlphaYellow: rgba(255, 196, 0, 0.1);
+    --AlphaBlack: rgba(0, 0, 0, 0.3);
+
+    --DarkAlphaPurple: rgba(233, 55, 237, 0.2);
+    --DarkAlphaBlue: rgba(41, 144, 255, 0.2);
+    --DarkAlphaGreen: rgba(50, 229, 94, 0.2);
+    --DarkAlphaRed: rgba(254, 59, 48, 0.2);
+    --DarkAlphaRedOrange: rgba(255, 71, 2, 0.2);
+    --DarkAlphaOrange: rgba(255, 116, 0, 0.2);
+    --DarkAlphaYellow: rgba(255, 196, 0, 0.2);
+    --DarkAlphaBlack: rgba(0, 0, 0, 0.7);
+    --overlay_mnemonic: rgba(255, 255, 255, 0.3);
+}
+
+html[data-theme='light'] {
+    --color_text_1: var(--Black);
+    --color_text_2: var(--Neutral_7);
+    --color_text_3: var(--Neutral_6);
+    --color_text_brand: var(--Orange);
+    --color_text_link: var(--Blue);
+    --color_text_buy: var(--Green);
+    --color_text_sell: var(--Red);
+    --color_text_danger: var(--Red);
+    --color_bg_0: var(--Neutral_0);
+    --color_bg_1: var(--Neutral_1);
+    --color_bg_2: var(--Neutral_2);
+    --color_bg_4: var(--Neutral_4);
+    --color_bg_6: var(--Neutral_6);
+    --color_bg_bottom: var(--Neutral_3);
+    --color_bg_top: var(--Neutral_0);
+    --color_border_1: var(--Neutral_3);
+    --color_border_2: var(--Neutral_5);
+    --color_border_success: var(--Green);
+    --color_border_fail: var(--Red);
+    --color_border_warning: var(--Orange);
+    --color_border_link: var(--Blue);
+    --color_button_primary: var(--Black);
+    --color_button_subtle: var(--Neutral_2);
+    --color_button_disable: var(--Neutral_3);
+    --color_button_brand: var(--Orange);
+    --color_button_buy: var(--Green);
+    --color_button_sell: var(--Red);
+    --color_button_danger: var(--Red);
+    --color_brand_1: var(--Orange);
+    --color_brand_2: var(--RedOrange);
+    --color_icon_close_bg: rgba(162, 172, 176, 0.3);
+    --overlay_bg: rgba(0, 0, 0, 0.3);
+    --overlay_mnemonic: rgba(255, 255, 255, 0.3);
+    --AlphaRed: rgba(254, 59, 48, 0.1);
+    --AlphaRedOrange: rgba(255, 71, 2, 0.1);
+}
+
+html[data-theme='dark'] {
+    --color_text_1: var(--DarkWhite);
+    --color_text_2: var(--DarkNeutral_9);
+    --color_text_3: var(--DarkNeutral_7);
+    --color_text_brand: var(--DarkOrange);
+    --color_text_link: var(--DarkBlue);
+    --color_text_buy: var(--DarkGreen);
+    --color_text_sell: var(--DarkRed);
+    --color_text_danger: var(--DarkRed);
+
+    --color_bg_0: var(--DarkNeutral_2);
+    --color_bg_1: var(--DarkNeutral_3);
+    --color_bg_2: var(--DarkNeutral_4);
+    --color_bg_4: var(--DarkNeutral_1);
+    --color_bg_6: var(--DarkNeutral_7);
+    --color_bg_bottom: var(--DarkNeutral_0);
+    --color_bg_top: var(--DarkNeutral_4);
+
+    --color_border_1: var(--DarkNeutral_3);
+    --color_border_2: var(--DarkNeutral_5);
+    --color_border_success: var(--DarkGreen);
+    --color_border_fail: var(--DarkRed);
+    --color_border_warning: var(--DarkOrange);
+    --color_border_link: var(--DarkBlue);
+
+    --color_button_primary: var(--DarkWhite);
+    --color_button_subtle: var(--DarkNeutral_2);
+    --color_button_disable: var(--DarkNeutral_3);
+    --color_button_brand: var(--DarkOrange);
+    --color_button_buy: var(--DarkGreen);
+    --color_button_sell: var(--DarkRed);
+    --color_button_danger: var(--DarkRed);
+
+    --color_brand_1: var(--DarkOrange);
+    --color_brand_2: var(--DarkRedOrange);
+
+    --color_icon_close_bg: rgba(82, 82, 92, 0.3);
+    --overlay_bg: rgba(0, 0, 0, 0.7);
+    --overlay_mnemonic: rgba(0, 0, 0, 0.3);
+    --AlphaRed: rgba(254, 59, 48, 0.2);
+    --AlphaRedOrange: rgba(255, 71, 2, 0.2);
+}
+
+* {
+    box-sizing: border-box;
+    overscroll-behavior: none;
+    /* word-break: break-all; */
+}
+
+html {
+    background-color: var(--tg-theme-bg-color);
+}
+body {
+    /* 禁用垂直方向的弹性效果 */
+    overscroll-behavior-y: none;
+    font-family: var(--MiSans-Regular);
+    -webkit-overflow-scrolling: touch !important;
+    overflow-scrolling: touch;
+  ;
+    /* -webkit-transform:translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0); */
+}
+
+body.no-scroll {
+    overflow: auto;
+    height: 100% !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+button {
+    outline: 0;
+}
+input {
+    outline: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+    -moz-appearance: textfield;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+    /* -webkit-appearance: none!important; */
+    /* margin: 0; */
+}
+input[type='number'] {
+    line-height: 1.6;
+}
