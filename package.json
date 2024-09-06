@@ -6,7 +6,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "@uxuycom/web3-tg-sdk": "^0.0.4",
+    "@uxuycom/web3-tg-sdk": "^0.0.5",
     "antd-mobile": "^5.37.1",
     "clsx": "^2.1.1",
     "ethers": "^6.13.2",
