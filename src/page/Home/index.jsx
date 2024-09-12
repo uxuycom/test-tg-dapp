@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo, useCallback, useLayoutEffect } fro
 import { WalletTgSdk } from '@uxuycom/web3-tg-sdk'
 import { ethers } from 'ethers'
 import clsx from 'clsx'
+import { track } from '../../utils/ga'
 import { Toast } from 'antd-mobile'
 import Btn from '../../components/Btn'
 import { approveABI, CHAINS, erc20Abi } from '../../config'
@@ -114,6 +115,15 @@ function App() {
     init()
   }, [])
 
+  const trackE = (e) => {
+    track({
+      params: {
+        code: e.code,
+        message: e.message,
+      },
+    })
+  }
+
 
   
   function initEventListener() {
@@ -136,8 +146,8 @@ function App() {
   const init =  async () => {
     window?.Telegram?.WebApp?.expand?.()
 
-    const accounts = await ethereum.request({ method: 'eth_accounts', params: [] })
-    const chainId = await ethereum.request({ method: 'eth_chainId', params: [] })
+    const accounts = await ethereum.request({ method: 'eth_accounts', params: [] }).catch(trackE)
+    const chainId = await ethereum.request({ method: 'eth_chainId', params: [] }).catch(trackE)
     const isConnected = accounts[0]
     setChainId(chainId)
     setAddress(accounts[0])
@@ -203,10 +213,10 @@ function App() {
       await ethereum.request({
         method: 'eth_requestAccounts',
         params: [],
-      })
+      }).catch(trackE)
       
-      const accounts = await ethereum.request({ method: 'eth_accounts', params: [] })
-      const chainId = await ethereum.request({ method: 'eth_chainId', params: [] })
+      const accounts = await ethereum.request({ method: 'eth_accounts', params: [] }).catch(trackE)
+      const chainId = await ethereum.request({ method: 'eth_chainId', params: [] }).catch(trackE)
       setAddress(accounts[0])
       setChainId(chainId)
       showNotification('Wallet connected successfully')  
@@ -225,7 +235,7 @@ function App() {
       await ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: chainId }],
-      });
+      }).catch(trackE)
       showNotification("Chain switched successfully");
     } catch (error) {
       console.error("Chain switch failed:", error);
@@ -242,7 +252,7 @@ function App() {
       const result = await ethereum.request({
         method: 'personal_sign',
         params: [signMessage, address],
-      })
+      }).catch(trackE)
       setState({ ...state, signature: result, message: signMessage })
       showNotification('Message signed successfully')
     } catch (error) {
@@ -271,7 +281,7 @@ function App() {
       const result = await ethereum.request({
         method: 'eth_signTypedData_v4',
         params: [message],
-      })
+      }).catch(trackE)
       setState({
         ...state, ['eth_signTypedData_v4']: {
           message: message,
@@ -321,7 +331,7 @@ function App() {
             value: valueInWei,
           },
         ],
-      })
+      }).catch(trackE)
       setState({
         ...state,
         transaction: { ...state.transaction, hash: result },
@@ -356,7 +366,7 @@ function App() {
       const result = await ethereum.request({
         method: 'eth_sendTransaction',
         params: [ transaction ],
-      })
+      }).catch(trackE)
       setState({ ...state, ['transaction_token']: { ...transaction_token, hash: result } });
       showNotification('Token Transaction sent successfully')
     } catch (error) {
@@ -374,7 +384,7 @@ function App() {
       const result = await ethereum.request({
         method: 'eth_getTransactionReceipt',
         params: [state.transaction.hash],
-      })
+      }).catch(trackE)
       setState({
         ...state,
         transaction: { ...state.transaction, receipt: result },
@@ -395,7 +405,7 @@ function App() {
       const result = await ethereum.request({
         method: 'eth_getTransactionReceipt',
         params: [state.transaction_token.hash],
-      })
+      }).catch(trackE)
       const transaction_token = state.transaction_token
       setState({ ...state, transaction_token: { ...transaction_token, receipt: result } })
       showNotification('successfully')
@@ -442,7 +452,7 @@ function App() {
       const result = await ethereum.request({
         method: 'eth_sendTransaction',
         params: [transaction],
-      })
+      }).catch(trackE)
       setState({ ...state, ['transaction_token']: { ...transaction, hash: result } })
       showNotification('successfully')
     } catch (error) {
